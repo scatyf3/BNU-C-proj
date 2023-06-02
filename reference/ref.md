@@ -24,3 +24,7 @@
 
 ## switch
 - 原来case下面不能定义变量...
+
+## 宏
+使用它能增加生活质量()
+- [多行宏](https://www.cnblogs.com/yangxuli/p/7646885.html)
