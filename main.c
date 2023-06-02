@@ -36,7 +36,7 @@ int main()
         }
         if (flag == 1)
         {
-            printf("欢迎来到由BNU@scommune开发的学生信息管理系统，输入a/add进入数据输入模式，输入q/quit退出系统，输入c/cal进入成绩计算，输入s/search进入检索ᕙ(•̤᷆ ॒ ູ•̤᷇)ᕘ₊˚\n");
+            printf("欢迎来到由BNU@scommune开发的学生信息管理系统，输入a/add进入数据输入模式，输入q/quit退出系统，输入c/cal进入成绩计算，输入s/search进入检索\n");
             ASK_FOR_INPUT()
             if (strcmp(buffer, "a") == 0 || strcmp(buffer, "add") == 0)
             {
@@ -59,13 +59,13 @@ int main()
         {
             printf("请输入你增加的课程名字，输入q/quit保存并退出\n");
             ASK_FOR_INPUT()
-            int course_id = has_course_id(buffer);
+            int course_id = has_course_id(buffer,course_name_table);
             if (course_id == -1)
             {
-                strcpy(course_name_table[course_counter], buffer);
+                strcpy(course_name_table[course_counter],buffer);
                 cur_course_number_of_stu[course_counter]=0;
                 course_counter++;
-                cur_course_stu_counter = 1;
+                cur_course_stu_counter = 0;
                 number_of_course++;
             }
             else
@@ -79,13 +79,13 @@ int main()
         if (strcmp(buffer, "q") == 0 || strcmp(buffer, "quit") == 0)
         {
             printf("谢谢您的使用，信息已经被保存为CSV格式，再见 o(´^｀)o\n");
-            FILE *fp = fopen("test_data/stu_total_score.csv", "w+");
+            FILE *fp = fopen("data/stu_total_score.csv", "w+");
             fprintf(fp, "ID,Name,score\n");
             for(int i=0;i<stu_counter;i++){
                 fprintf(fp,"%d,%s,%lf\n",i,stu_name_table[i],cal_stu_average_score(i,course_score_table));
             }
 
-            FILE *fp_course = fopen("test_data/course.csv", "w+");
+            FILE *fp_course = fopen("data/course.csv", "w+");
             fprintf(fp_course, "ID,course_name,score\n");
             for(int i=0;i<course_counter;i++){
                 fprintf(fp_course,"%d,%s,%lf\n",i,course_name_table[i],cal_course_average_score(i,course_score_table));
@@ -97,11 +97,11 @@ int main()
         if (flag == 3)
         {
             printf("正在输入%s课程成绩,输入f结束本课程成绩录入\n", course_name_table[course_counter]);
-            printf("正在输入第%d个学生的姓名和课程成绩", cur_course_stu_counter);
+            printf("正在输入第%d个学生的姓名和课程成绩", cur_course_stu_counter+1);
             printf("请输入该名同学的姓名\n");
             printf(">");
             ASK_FOR_INPUT()
-            int stu_id = has_stu_id(buffer);
+            int stu_id = has_stu_id(buffer,stu_name_table);
             if (strcmp(buffer, "f") == 0 || strcmp(buffer, "finish") == 0)
             {
                 flag = 1;
@@ -117,7 +117,7 @@ int main()
                 cur_course_stu_counter++;
                 cur_course_number_of_stu[course_counter - 1]++;
                 // stu_counter在这里用作提醒不科学
-                printf("正在输入当前课程第%d个学生的姓名和课程成绩", cur_course_stu_counter - 1);
+                printf("正在输入当前课程第%d个学生的姓名和课程成绩", cur_course_stu_counter);
                 printf("请输入该名同学的分数\n");
                 printf(">");
                 ASK_FOR_INPUT()
@@ -164,7 +164,7 @@ int main()
             }
             else
             {
-                int course_id = check_course_id(buffer);
+                int course_id = has_course_id(buffer,course_name_table);
 
                 // printf("%d", course_id);
                 //  debug_display_course_name_table(course_name_table);
@@ -176,9 +176,9 @@ int main()
                 else
                 {
                     // 数据保存无误，可能是courseid查询有问题
-                    debug_show_course_score(course_id,course_score_table);
+                    //debug_show_course_score(course_id,course_score_table);
                     double ans = cal_course_average_score(course_id, course_score_table);
-                    printf("您想查询的%s课程平均成绩为%lf", course_name_table[course_id], ans);
+                    printf("您想查询的%s课程平均成绩为%lf\n", course_name_table[course_id], ans);
                 }
             }
         }
@@ -194,7 +194,7 @@ int main()
             }
             else
             {
-                int stu_id = check_stu_id(buffer);
+                int stu_id = has_stu_id(buffer,stu_name_table);
                 if (stu_id == -1)
                 {
                     printf("未找到您想查询的课程\n");
@@ -214,6 +214,7 @@ int main()
             printf("当前数据库中存有%d名学生成绩，%d个课程成绩\n", stu_counter, course_counter);
             printf("若想按照课程查找请输入：course\n");
             printf("若想按照学生查找请输入：student\n");
+            printf("若想查找某学生在某课程里的趁机请输入：student_in_course\n");
             ASK_FOR_INPUT()
             if (strcmp(buffer, "course") == 0)
             {
@@ -223,13 +224,17 @@ int main()
             {
                 flag = 9;
             }
+            else if (strcmp(buffer, "student_in_course") == 0)
+            {
+                flag=10;
+            }
         }
         if (flag == 8)
         {
             // 按课程查找
             printf("请输入你想查找的课程\n");
             ASK_FOR_INPUT()
-            int course_id = check_course_id(buffer);
+            int course_id = has_stu_id(buffer,course_name_table);
             if (course_id == -1)
             {
                 printf("未找到您想查询的课程\n");
@@ -257,7 +262,7 @@ int main()
             // 按学生查找
             printf("请输入你想查找的同学\n");
             ASK_FOR_INPUT()
-            int stu_id = check_stu_id(buffer);
+            int stu_id = has_stu_id(buffer,stu_name_table);
             if (stu_id == -1)
             {
                 printf("未找到您想查询的学生\n");
@@ -277,6 +282,25 @@ int main()
                     }
                 }
                 printf("这位同学的平均分为:%lf\n", sum / counter);
+            }
+        }
+        if(flag==10){
+            printf("请输入你想查找的同学\n");
+            ASK_FOR_INPUT()
+            int stu_id = has_stu_id(buffer,stu_name_table);
+            if (stu_id == -1)
+            {
+                printf("未找到您想查询的学生\n");
+            }
+            printf("请输入你想查找的课程\n");
+            ASK_FOR_INPUT()
+            int course_id = has_course_id(buffer,course_name_table);
+            if (course_id == -1)
+            {
+                printf("未找到您想查询的课程\n");
+            }
+            else{
+                printf("学生%s在课程%s的成绩为%lf]n",stu_name_table[stu_id],course_name_table[course_id],course_score_table[course_id][stu_id]);
             }
         }
 

@@ -1,74 +1,3 @@
-# BNU-C-proj
-北师大程序设计C语言大作业,完成一个学生成绩统计程序,其功能包括:
-- 成绩输入
-- 数据计算
-  - 计算学生平均
-  - 计算课程平均
-- 数据查找
-- 输出成绩
-
-# 本repo组织如下
-- history_archive 是一些失败的/被重构掉的代码
-- reference 是编写本程序时使用的一些参考资料，主要涉及到char的处理和io问题
-- test_data，输出的CSV数据存储出
-- 程序本体
-- test 保存一次测试的结果
-
- 
-
-# 代码组织结构如下
-
-## main
-在主函数中使用一个大循环处理交互：
-- 在循环的第一次，初始化我们的`course_score_table`以及一些其他的表格，询问进入什么状态
-- 根据交互的输入输出，改变flag变量的值
-
-其中用flag这个变量来记录状态及其转变，其含义有：
-- 1：加载，选择模式
-- 2：进入编辑模式，获取课程名称
-- 3：编辑单个课程，输入学生信息
-- 4：进入计算模式，选择按课程还是按学生计算
-- 5：按课程计算均分
-- 6：按学生姓名计算均分
-- 7：查找模式总界面，选择按课程还是按学生查找
-- 8：按课程查找
-- 9：按学生姓名查找
-- 10：查找某学生在某课程里的表现
-
-另外，当我们选择`quit`的时候，将课程和学生均分两个csv写入
-
-![一个图示](BNUCPROJ/BNU-C-proj/assert/main.png)
-
-## stu_info.h
-储存学生信息的头文件，其采用多个数组和二维数组，用index和课程/学生id的对应进行索引，具体解释如下：
-- `stu_name_table`,存放学生姓名，用`stu_counter`指示顶部
-- `course_name_table`,存放课程名，用`course_counter`指示顶部
-- `course_score_table`，存放全部学生在各个课程取得的分数，是最重要的表格
-- `cur_course_number_of_stu`,存放各个课程中学生的数目
-
-对于输入的每个新的课程名/学生姓名，我们都会先检测其是否有ID，如果无ID，则将其加入`stu_name_table`或者`course_name_table`的空位中，将其在一维数组中的index作为ID
-
-在`course_score_table`这一二维数组中，我们记录某学生在某课程中的成绩，如`course_score_table[i][j]`的含义是学生id为j的同学在课程id为i的课程中取得的成绩
-
-![一个图示](BNUCPROJ/BNU-C-proj/assert/stu_info_pic.png)
-
-另外，在这个头文件里，封装了一些宏和函数，以便简化主模块代码，其功能如下：
-- `INIT()`，初始化表格
-- `double cal_course_average_score(int course_id,double course_score_table[MAX_LENGTH][MAX_SIZE_OF_STU])`计算课程平均分
-- `double cal_stu_average_score(int stu_id,double course_score_table[MAX_LENGTH][MAX_SIZE_OF_STU])`，计算学生平均分
-- `int has_stu_id(char buffer[MAX_LENGTH])`，输入学生姓名，返回学生姓名对应的id，-1对应着查询失败
-- `int has_course_id(char buffer[MAX_LENGTH])`，输入课程名，返回课程名对应的id，-1对应着查询失败
-
-
-## debug.h 
-用于debug的一些函数
-
-## assert
-存放本`README.md `插图的文件夹
-
-# 测试数据
-测试运行的截图以及本次运行的CSV结果储存在test文件夹里，交互过程如下：
-```bash
 @scommune ➜ /workspaces/codespaces-blank/BNUCPROJ/BNU-C-proj (main) $ ./main
 欢迎来到由BNU@scommune开发的学生信息管理系统，输入a/add进入数据输入模式，输入q/quit退出系统，输入c/cal进入成绩计算，输入s/search进入检索
 >a
@@ -153,6 +82,4 @@
 >quit
 未找到您想查询的课程
 谢谢您的使用，信息已经被保存为CSV格式，再见 o(´^｀)o
-```
-
 
