@@ -3,6 +3,7 @@ void debug_show_course_score(int course_id,double course_score_table[MAX_LENGTH]
         //便利起见只循环到10
         printf("%lf",course_score_table[course_id][i]);
     }
+    printf("\n");
 }
     
 void debug_display_cur_counter(int course_counter,int student_counter){

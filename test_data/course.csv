@@ -1,5 +1,3 @@
-ID,name,score
-1,wang,90
-2,zhang,89
-3,yao,70
-4,xu,60
+ID,course_name,score
+0,cs,80.000000
+1,ee,75.000000

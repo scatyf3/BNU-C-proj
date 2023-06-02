@@ -29,7 +29,7 @@ int check_stu_id(char stu_name[MAX_LENGTH]){
     //返回学生姓名对应的id，-1对应着查询失败
     int stu_id;
     for(int i=0;i<number_of_stu;i++){
-        if(stu_name==stu_name_table[i]){
+        if(strcmp(stu_name,stu_name_table[i])==0){
             stu_id=i;
         }
         else{
@@ -73,17 +73,49 @@ double check_course_score(char stu_name[MAX_LENGTH],char course_name[MAX_LENGTH]
     return course_score_table[course_id][stu_id];
 }
 
-double cal_course_average_score(int course_id,double course_score_table[MAX_LENGTH][MAX_SIZE_OF_STU],int cur_course_number_of_stu){
+double cal_course_average_score(int course_id,double course_score_table[MAX_LENGTH][MAX_SIZE_OF_STU]){
     double sum=0;
-    printf("%d",cur_course_number_of_stu);
+    int counter=0;
+    //printf("%d",cur_course_number_of_stu);
     for(int i=0;i<MAX_SIZE_OF_STU;i++){
         if(course_score_table[course_id][i]!=-1){
             sum+=course_score_table[course_id][i];
+            counter++;
         }
     }
-    return (double)sum/cur_course_number_of_stu;
+    return (double)sum/counter;
 }
 
+double cal_stu_average_score(int stu_id,double course_score_table[MAX_LENGTH][MAX_SIZE_OF_STU]){
+    double sum=0;
+    double counter=0;
+    for(int i=0;i<MAX_LENGTH;i++){
+        if(course_score_table[i][stu_id]!=-1){
+            sum+=course_score_table[i][stu_id];
+            counter++;
+        }
+    }
+    return sum/counter;
+}
+
+int has_stu_id(char buffer[MAX_LENGTH]){
+    for(int i=0;i<MAX_SIZE_OF_STU;i++){
+        if(strcmp(buffer,stu_name_table[i])==0){
+            return i;
+        }
+    }
+    return -1;
+}
+
+
+int has_course_id(char buffer[MAX_LENGTH]){
+    for(int i=0;i<MAX_LENGTH;i++){
+        if(strcmp(buffer,course_name_table[i])==0){
+            return i;
+        }
+    }
+    return -1;
+}
 
 
 
